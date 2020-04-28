@@ -26,6 +26,8 @@ Vue.component('portfolio-view', {
                               v-bind:key="portfolio.id"></portfolio-card>
             </div>
           </div>
+          
+          <portfolio-update v-bind:portfolio="portfolio"></portfolio-update> 
         </div>
       </div>
     `,

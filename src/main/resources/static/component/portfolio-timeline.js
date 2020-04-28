@@ -14,7 +14,7 @@ Vue.component('timeline', {
             </ul>
           </div>
           <div class="card-footer">
-            <a href="#">Go to Account ></a>
+            <a href="#" data-toggle="modal" data-target="#portfolioModalUpdate">Go to Account ></a>
           </div>
         </div>
       </div>
