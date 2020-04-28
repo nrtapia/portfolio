@@ -6,7 +6,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class Post implements Serializable {
+public class TwitterPost implements Serializable {
 
   private static final long serialVersionUID = 20200427L;
 

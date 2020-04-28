@@ -2,8 +2,8 @@ package com.ntapia.profile.portfolio.application.finder;
 
 import com.ntapia.profile.portfolio.domain.Portfolio;
 import com.ntapia.profile.portfolio.domain.PortfolioRepository;
-import com.ntapia.profile.post.domain.Post;
-import com.ntapia.profile.post.domain.PostService;
+import com.ntapia.profile.post.domain.TwitterPost;
+import com.ntapia.profile.post.domain.TwitterService;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,12 +18,12 @@ public class PortfolioFinderImpl implements PortfolioFinder {
   private static final String FIND_PORTFOLIO_LOG = "Find portfolio: {}";
 
   private final PortfolioRepository portfolioRepository;
-  private final PostService postService;
+  private final TwitterService twitterService;
 
   public PortfolioFinderImpl(PortfolioRepository portfolioRepository,
-      PostService postService) {
+      TwitterService twitterService) {
     this.portfolioRepository = portfolioRepository;
-    this.postService = postService;
+    this.twitterService = twitterService;
   }
 
   @Transactional(readOnly = true)
@@ -34,7 +34,7 @@ public class PortfolioFinderImpl implements PortfolioFinder {
 
     if (optionalPortfolio.isPresent()) {
       final var portfolio = optionalPortfolio.get();
-      return postService.findByUsername(portfolio.getTwitterUsername())
+      return twitterService.findByUsername(portfolio.getTwitterUsername())
           .map(postList -> mapToFinderResponse(portfolio, postList));
     } else {
       return Optional.empty();
@@ -42,7 +42,7 @@ public class PortfolioFinderImpl implements PortfolioFinder {
   }
 
 
-  private static PortfolioResponse mapToFinderResponse(Portfolio portfolio, List<Post> postList) {
+  private static PortfolioResponse mapToFinderResponse(Portfolio portfolio, List<TwitterPost> twitterPostList) {
 
     var portfolioDto = PortfolioDto.builder()
         .id(portfolio.getId())
@@ -52,7 +52,7 @@ public class PortfolioFinderImpl implements PortfolioFinder {
         .twitterUsername(portfolio.getTwitterUsername())
         .build();
 
-    var timelineItemsDto = postList.stream()
+    var timelineItemsDto = twitterPostList.stream()
         .map(post -> TimelineItemDto.builder()
             .id(post.getId())
             .imageUrl(post.getPhoto())
