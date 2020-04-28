@@ -7,5 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 class PortfolioNotFoundException extends RuntimeException {
 
   public PortfolioNotFoundException() {
+    super();
   }
 }
