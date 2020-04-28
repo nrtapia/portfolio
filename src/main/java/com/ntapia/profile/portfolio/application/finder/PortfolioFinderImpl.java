@@ -9,10 +9,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 public class PortfolioFinderImpl implements PortfolioFinder {
+
+  private static final String FIND_PORTFOLIO_LOG = "Find portfolio: {}";
 
   private final PortfolioRepository portfolioRepository;
   private final PostService postService;
@@ -23,8 +26,10 @@ public class PortfolioFinderImpl implements PortfolioFinder {
     this.postService = postService;
   }
 
+  @Transactional(readOnly = true)
   @Override
   public Optional<PortfolioResponse> find(PortfolioFinderRequest finderRequest) {
+    log.debug(FIND_PORTFOLIO_LOG, finderRequest);
     var optionalPortfolio = portfolioRepository.findById(finderRequest.getId());
 
     if (optionalPortfolio.isPresent()) {
@@ -44,6 +49,7 @@ public class PortfolioFinderImpl implements PortfolioFinder {
         .title(portfolio.getTitle())
         .description(portfolio.getDescription())
         .imageUrl(portfolio.getImageUrl())
+        .twitterUsername(portfolio.getTwitterUsername())
         .build();
 
     var timelineItemsDto = postList.stream()

@@ -6,8 +6,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,9 +61,7 @@ public class PortfolioGetControllerTest {
 
     mvc.perform(
         get(PortfolioGetController.ENDPOINT, id))
-        .andDo(print())
         .andExpect(status().isOk())
-        .andExpect(content().contentType("application/json"))
         .andExpect(jsonPath("$.id").value(portfolioDto.getId()))
         .andExpect(jsonPath("$.photo").value(portfolioDto.getImageUrl()))
         .andExpect(jsonPath("$.title").value(portfolioDto.getTitle()))
@@ -91,7 +87,6 @@ public class PortfolioGetControllerTest {
 
     mvc.perform(
         get(PortfolioGetController.ENDPOINT, id))
-        .andDo(print())
         .andExpect(status().isNotFound())
         .andExpect(status().reason(containsString("Portfolio not found")));
 

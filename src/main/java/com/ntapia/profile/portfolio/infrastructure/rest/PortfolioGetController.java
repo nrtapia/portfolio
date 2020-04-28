@@ -49,6 +49,7 @@ public class PortfolioGetController {
         .title(portfolioDto.getTitle())
         .description(portfolioDto.getDescription())
         .timeline(timeline)
+        .twitterUsername(portfolioDto.getTwitterUsername())
         .build();
   }
 
@@ -69,6 +70,7 @@ public class PortfolioGetController {
     private String photo;
     private String title;
     private String description;
+    private String twitterUsername;
     private List<Item> timeline;
   }
 

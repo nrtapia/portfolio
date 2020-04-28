@@ -13,12 +13,15 @@ public class PortfolioDto implements Serializable {
   private final String title;
   private final String description;
   private final String imageUrl;
+  private final String twitterUsername;
 
-  public PortfolioDto(Long id, String title, String description, String imageUrl) {
+  public PortfolioDto(Long id, String title, String description, String imageUrl,
+      String twitterUsername) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.imageUrl = imageUrl;
+    this.twitterUsername = twitterUsername;
   }
 
   public Long getId() {
@@ -37,6 +40,10 @@ public class PortfolioDto implements Serializable {
     return imageUrl;
   }
 
+  public String getTwitterUsername() {
+    return twitterUsername;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -49,11 +56,12 @@ public class PortfolioDto implements Serializable {
     return Objects.equals(id, that.id) &&
         title.equals(that.title) &&
         description.equals(that.description) &&
-        imageUrl.equals(that.imageUrl);
+        imageUrl.equals(that.imageUrl) &&
+        twitterUsername.equals(that.twitterUsername);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, title, description, imageUrl);
+    return Objects.hash(id, title, description, imageUrl, twitterUsername);
   }
 }
