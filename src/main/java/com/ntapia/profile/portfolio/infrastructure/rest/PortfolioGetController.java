@@ -78,7 +78,7 @@ public class PortfolioGetController {
   @Builder
   private static class Item {
 
-    private String id;
+    private Long id;
     private String photo;
     private String name;
     private String description;

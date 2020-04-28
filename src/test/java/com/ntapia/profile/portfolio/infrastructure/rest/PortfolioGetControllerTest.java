@@ -47,7 +47,7 @@ public class PortfolioGetControllerTest {
         .build();
 
     final var timelineItemDto = TimelineItemDto.builder()
-        .id("11")
+        .id(11L)
         .name("Iron Man")
         .text("Man with armor")
         .imageUrl("http://images/user10.png")

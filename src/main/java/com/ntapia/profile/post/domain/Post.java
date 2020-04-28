@@ -10,7 +10,7 @@ public class Post implements Serializable {
 
   private static final long serialVersionUID = 20200427L;
 
-  private String id;
+  private Long id;
   private String userName;
   private String text;
   private String photo;

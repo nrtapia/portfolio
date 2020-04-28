@@ -11,17 +11,16 @@ public class PostServiceImpl implements PostService {
 
   private static final String FIND_POSTS_LOG = "Find posts for userName: {}";
 
+  private final PostRepository postRepository;
+
+  public PostServiceImpl(PostRepository postRepository) {
+    this.postRepository = postRepository;
+  }
+
   @Override
   public Optional<List<Post>> findByUsername(String userName) {
     log.debug(FIND_POSTS_LOG, userName);
 
-    return Optional.of(List.of(
-        Post.builder()
-            .id("11")
-            .photo("url")
-            .text("text text")
-            .userName("twitName")
-            .build()
-    ));
+    return Optional.of(postRepository.findByUserName(userName));
   }
 }

@@ -11,20 +11,16 @@
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
         crossorigin="anonymous">
 
-  <title>Profile</title>
+  <link rel="stylesheet" href="/css/main.css">
+
+  <title>Portfolio</title>
 </head>
 <body>
 
 <div id="contents" class="container">
-  <div class="row">
-    <div class="col-sm-4">
-      <profile-photo v-bind:image="profile.photo"></profile-photo>
-      <timeline v-bind:profile="profile"></timeline>
-    </div>
-    <div class="col-sm-8">
-      <profile-card v-bind:profile="profile" v-bind:key="profile.id"></profile-card>
-    </div>
-  </div>
+
+  <portfolio-view></portfolio-view>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -43,16 +39,73 @@
 
 <script type="text/babel">
 
-  Vue.component('profile-card', {
-    props: ['profile'],
+  Vue.component('portfolio-view', {
     template: `
       <div>
-        <h1> {{ profile.firstName + " " + profile.lastName }}</h1>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="d-flex align-items-center">
+              <form-search v-on:find-by-id-event="getPortfolio( $event )"></form-search>
+              <div v-if="loading" class="spinner-border ml-auto" role="status"
+                   aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div class="col-sm-12" v-if="error">
+            <div v-if="error" class="alert alert-danger" role="alert">
+              {{ error }}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-4">
+              <portfolio-photo v-bind:image="portfolio.photo"></portfolio-photo>
+              <timeline v-bind:portfolio="portfolio"></timeline>
+            </div>
+            <div class="col-sm-8">
+              <portfolio-card v-bind:portfolio="portfolio"
+                              v-bind:key="portfolio.id"></portfolio-card>
+            </div>
+          </div>
+        </div>
+      </div>
+    `,
+    data: () => ({
+      portfolio: {photo: "/images/user-empty.png"},
+      loading: false,
+      error: null
+    }),
+    watch: {
+      '$route': 'getPortfolio'
+    },
+    methods: {
+      async getPortfolio(id) {
+        this.error = null;
+        this.loading = true;
+        console.log('Get portfolio id:', id);
+
+        let response = await fetch(`/portfolio/${id}`);
+        if (response.status === 200) {
+          this.portfolio = await response.json();
+        } else {
+          this.error = response.status === 404 ? 'Portfolio not found!' : 'Error to process the search.';
+        }
+
+        this.loading = false;
+      }
+    }
+  });
+
+  Vue.component('portfolio-card', {
+    props: ['portfolio'],
+    template: `
+      <div>
+        <h1> {{ portfolio.title }}</h1>
         <div class="card">
           <div class="card-body">
             <h4 class="card-title text-muted">My Work Experience</h4>
             <p class="card-text">
-              {{ profile.description }}
+              {{ portfolio.description }}
             </p>
           </div>
         </div>
@@ -60,7 +113,7 @@
     `
   });
 
-  Vue.component('profile-photo', {
+  Vue.component('portfolio-photo', {
     props: ['image'],
     template: `
       <div>
@@ -70,16 +123,16 @@
   });
 
   Vue.component('timeline', {
-    props: ['profile'],
+    props: ['portfolio'],
     template: `
       <div>
         <div class="card">
           <div class="card-header">
-            <h4>{{ profile.firstName }} Timeline</h4>
+            <h4>{{ portfolio.title }}'s Timeline</h4>
           </div>
           <div class="card-body">
             <ul class="list-unstyled">
-              <timeline-item v-for="item in profile.timeline" :key="item.id"
+              <timeline-item v-for="item in portfolio.timeline" :key="item.id"
                              v-bind:item="item" v-bind:key="item.id">
               </timeline-item>
             </ul>
@@ -105,31 +158,26 @@
     `
   });
 
+  Vue.component('form-search', {
+    template: `
+      <form class="form-inline">
+        <label class="sr-only" for="id">Portfolio ID</label>
+        <input name="id" v-model.number="id" type="text" class="form-control mb-2 mr-sm-2" id="id"
+               placeholder="Portfolio ID">
+        <button v-on:click="$emit('find-by-id-event', id)" type="button"
+                class="btn btn-primary mb-2">
+          Search
+        </button>
+      </form>
+    `
+    ,
+    data: () => ({
+      id: ''
+    })
+  });
+
   var app = new Vue({
     el: '#contents',
-    data: {
-      profile: {
-        id: 1,
-        photo: "images/user-empty.png",
-        title: "Jhon",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at elementum purus. Aenean id ex sit amet enim mollis egestas. Curabitur vitae risus vel tellus vulputate commodo at congue diam. Duis tincidunt ante eget mi ullamcorper pulvinar eget a nisl. Vestibulum vehicula mollis consectetur. Vivamus non efficitur arcu. Aenean placerat nisl sapien, placerat malesuada velit vulputate vitae. Maecenas elit erat, fringilla sed nibh a, interdum aliquam nunc. Aliquam iaculis elit non elit euismod volutpat. Nunc sapien odio, aliquet vitae feugiat eget, facilisis vel tellus. Aenean risus risus, ultrices at tellus interdum, volutpat faucibus risus. Aenean vel sollicitudin lacus. Nullam id dignissim ex, bibendum consequat diam. Maecenas porta ac quam a lacinia. "
-            + "Vestibulum tempus purus arcu, eu gravida mi maximus id. In hac habitasse platea dictumst. Ut non euismod elit, facilisis fringilla enim. Aenean faucibus dictum accumsan. Quisque gravida hendrerit massa quis lobortis. Donec eleifend, mauris non sagittis tristique, erat mauris maximus leo, quis tempus sapien risus ac diam. Aliquam fermentum felis neque, dapibus feugiat dui lobortis nec. Cras metus leo, aliquam eget venenatis vitae, interdum non enim. Vivamus sed nisi lobortis, suscipit libero at, volutpat massa. Vestibulum vulputate a sapien quis convallis. Phasellus convallis dolor a mauris porta, maximus dignissim urna cursus. Maecenas varius tristique urna, at rhoncus ligula. Nunc et nisl lorem. Nulla facilisi. Integer blandit ligula sagittis, laoreet nulla quis, lacinia erat.",
-        timeline: [
-          {
-            id: "1",
-            photo: "images/user-empty.png",
-            name: "Lionel Messi",
-            description: "Argentina's superstar"
-          },
-          {
-            id: "2",
-            photo: "images/user-empty.png",
-            name: "Christiano Ronaldo",
-            description: "World #1-ranked player from Portugal"
-          }
-        ]
-      }
-    }
   });
 </script>
 

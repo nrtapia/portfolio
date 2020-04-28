@@ -9,19 +9,19 @@ public class TimelineItemDto implements Serializable {
 
   private static final long serialVersionUID = 20200427L;
 
-  private final String id;
+  private final Long id;
   private final String name;
   private final String text;
   private final String imageUrl;
 
-  public TimelineItemDto(String id, String name, String text, String imageUrl) {
+  public TimelineItemDto(Long id, String name, String text, String imageUrl) {
     this.id = id;
     this.name = name;
     this.text = text;
     this.imageUrl = imageUrl;
   }
 
-  public String getId() {
+  public Long getId() {
     return id;
   }
 
