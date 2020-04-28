@@ -19,7 +19,6 @@ import twitter4j.conf.ConfigurationBuilder;
 public class PostTwitterClientImpl implements PostRepository {
 
   private static final String TWITTER_TIMELINE_LOG = "Twitter timeline for: {}";
-  private static final String ERROR_MESSAGE = "Error to request twitter timeline";
   private static final String ERROR_TO_REQUEST_LOG = "Error to request twitter timeline: {}";
 
   @Value("${post.timeline.size}")
@@ -39,7 +38,7 @@ public class PostTwitterClientImpl implements PostRepository {
 
     } catch (TwitterException e) {
       log.error(ERROR_TO_REQUEST_LOG, userName, e);
-      throw new PostTwitterClientException(ERROR_MESSAGE);
+      throw new PostTwitterClientException();
     }
   }
 
